@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">お天気情報簡単検索</string>
+
+    <string-array name="cityList">
+        <item>福岡</item>
+        <item>長崎</item>
+        <item>佐賀</item>
+        <item>熊本</item>
+        <item>宮崎</item>
+        <item>大分</item>
+        <item>鹿児島</item>
+        <item>沖縄</item>
+    </string-array>
+</resources>
