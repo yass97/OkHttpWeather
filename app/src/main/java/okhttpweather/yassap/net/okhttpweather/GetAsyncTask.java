@@ -21,29 +21,37 @@ import okhttp3.ResponseBody;
  * Created by matsudayasunori on 2018/01/14.
  */
 
-public class GetAsyncTask extends AsyncTask<Object,Void,Object> {
+public class GetAsyncTask extends AsyncTask<Object, Void, Object> {
 
     // USE WEEK REFERENCE
     private final WeakReference<Activity> w_Activity;
 
     // コンストラクタで、呼び出しもとActivityを弱参照で変数セット。
-    GetAsyncTask(Activity activity){
+    GetAsyncTask(Activity activity) {
 
         this.w_Activity = new WeakReference<>(activity);
     }
 
     // バックグラウンド処理。
     @Override
-    protected Object doInBackground(Object[] data){
+    protected Object doInBackground(Object[] data) {
 
         // Object配列でパラメータを持ってこれたか確認。
         String url = (String) data[0];
-        String queryString = (String)data[1];
+        String queryString = (String) data[1];
 
         // HTTP処理用オブジェクト生成。
         OkHttpClient client = new OkHttpClient();
 
-        // 送信用リクエストを作成。
+        /**
+         * OkHttpを利用する際の流れ
+         * Requestオブジェクトを生成
+         * OkHttpClientのインスタンスのnewCallメソッドに渡してスタンバイする。
+         *OkHttpClientインスタンスのexecuteメソッドを実行して、Responseオブジェクトを受け取る。
+         *
+         */
+
+        // 送信用リクエストオブジェクトを作成。
         Request request = new Request.Builder().url(url + queryString).get().build();
 
         // 受信用オブジェクトを作成。
@@ -53,15 +61,16 @@ public class GetAsyncTask extends AsyncTask<Object,Void,Object> {
         // 送信と受信。
         try {
 
+            // OkHttpインスタンスのexecuteメソッドを実行して、Responseオブジェクトを受け取る。
             Response response = call.execute();
             ResponseBody body = response.body();
 
-            if(body != null){
+            if (body != null) {
 
                 result = body.string();
             }
 
-        }catch (IOException e){
+        } catch (IOException e) {
 
             e.printStackTrace();
         }
@@ -72,10 +81,10 @@ public class GetAsyncTask extends AsyncTask<Object,Void,Object> {
 
     // バックグラウンド完了処理。
     @Override
-    protected void onPostExecute(Object result){
+    protected void onPostExecute(Object result) {
 
         super.onPostExecute(result);
-        Log.i("onPostExecute",(String)result);
+        Log.i("onPostExecute", (String) result);
 
         // 簡単にJSONレスポンスをパースする。
         String title = "no response";
@@ -84,14 +93,14 @@ public class GetAsyncTask extends AsyncTask<Object,Void,Object> {
 
         try {
 
-            JSONObject json = new JSONObject((String)result);
+            JSONObject json = new JSONObject((String) result);
             title = json.getString("title");
-            JSONObject descriptionObj = (JSONObject)json.get("description");
+            JSONObject descriptionObj = (JSONObject) json.get("description");
             description = descriptionObj.getString("text");
             publicTime = descriptionObj.getString("publicTime");
 
 
-        }catch (JSONException je){
+        } catch (JSONException je) {
 
             je.getStackTrace();
         }
@@ -99,15 +108,26 @@ public class GetAsyncTask extends AsyncTask<Object,Void,Object> {
         // 画面表示。
         Activity activity = w_Activity.get();
 
-        if(activity == null || activity.isFinishing() || activity.isDestroyed()){
+        if (activity == null || activity.isFinishing() /*|| activity.isDestroyed()*/) {
 
             // activity is no longer valid,don't do anything!
             return;
         }
 
         TextView tv = activity.findViewById(R.id.textview);
-        String showText = title + "\n" + publicTime + "\n" + description;
+        //String showText = title + "\n" + publicTime + "\n" + description;
+        String showText = description;
         tv.setText(showText);
+        TextView titleView = activity.findViewById(R.id.tablerowtitle);
+        titleView.setText(title);
+
+        TextView dayView = activity.findViewById(R.id.tablerowDay);
+        TextView timeView = activity.findViewById(R.id.tablerowTime);
+        String day = publicTime.substring(0,10);
+        String time = publicTime.substring(11,19);
+
+        dayView.setText(day);
+        timeView.setText(time + " (最終更新時刻)");
 
     }
 

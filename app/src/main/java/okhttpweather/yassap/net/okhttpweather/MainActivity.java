@@ -28,45 +28,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String weatherUrl = "http://weather.livedoor.com/forecast/webservice/json/v1";
                 // 福岡のIDを指定。
 
-                Spinner cityName = (Spinner)findViewById(R.id.spinner);
-                String getName = (String)cityName.getSelectedItem();
+                Spinner cityName = (Spinner) findViewById(R.id.spinner);
+                String getName = (String) cityName.getSelectedItem();
                 String cityId = "";
 
-                Log.d("getNameのデータ",getName);
+                Log.d("getNameのデータ", getName);
 
-                if(getName.equals("福岡")){
+                if (getName.equals("福岡")) {
 
                     // 福岡
                     cityId = "400010";
 
-                }else if(getName.equals("長崎")){
+                } else if (getName.equals("長崎")) {
 
                     // 佐世保
                     cityId = "420020";
 
-                }else if(getName.equals("熊本")){
+                } else if (getName.equals("熊本")) {
 
                     // 熊本市
                     cityId = "430010";
 
-                }else if(getName.equals("大分")){
+                } else if (getName.equals("大分")) {
 
                     cityId = "440010";
 
-                }else if(getName.equals("宮崎")){
+                } else if (getName.equals("宮崎")) {
 
                     // 宮崎市
                     cityId = "450010";
 
-                }else if(getName.equals("鹿児島")){
+                } else if (getName.equals("鹿児島")) {
 
                     // 鹿児島市
                     cityId = "460010";
 
-                }else if(getName.equals("沖縄")){
+                } else if (getName.equals("沖縄")) {
 
                     // 那覇
                     cityId = "471010";
+                } else if (getName.equals("佐賀")) {
+
+                    cityId = "410010";
                 }
 
                 String queryString = "?city=" + cityId;
